@@ -1,0 +1,21 @@
+.titleTableNormal {
+  font-family: var(--lis-title);
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.greenBackgraund {
+  background-color: rgba(0, 177, 118, 0.527);
+}
+
+.orangeBackgraund {
+  background-color: orange;
+}
+
+.redBackgraund {
+  background-color: var(--aedas-red) !important;
+}
+
+.isEditable{
+  background-color: rgba(221, 225, 228, 0.498);
+}

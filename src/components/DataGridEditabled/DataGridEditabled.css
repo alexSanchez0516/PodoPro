@@ -1,0 +1,11 @@
+.MuiDataGrid-main {
+    min-height: 14em !important;
+}
+
+.css-1jbbcbn-MuiDataGrid-columnHeaderTitle {
+    font-weight: bold !important;
+}
+
+.MuiTablePagination-toolbar p {
+    margin-bottom: 0 !important;
+}

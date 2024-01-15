@@ -211,7 +211,7 @@ export default function Patients() {
           </div>
         </Card>
 
-        <Accordion className="w-full">
+        <Accordion className="w-full" expanded>
           <AccordionSummary
             className="w-full"
             expandIcon={<GridExpandMoreIcon />}
@@ -245,31 +245,7 @@ export default function Patients() {
                 label="Amount"
               />
             </FormControl>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <MyDatePicker />
-            </FormControl>
-            <div className="flex w-full">
-              <TextField
-                label="Importe"
-                id="outlined-start-adornment"
-                sx={{ m: 1, width: "25ch" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">€</InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                label="Beneficio"
-                id="outlined-start-adornment"
-                sx={{ m: 1, width: "25ch" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">€</InputAdornment>
-                  ),
-                }}
-              />
-            </div>
+
             <div className="flex w-full justify-between mx-2">
               <Button
                 variant="contained"

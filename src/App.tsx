@@ -9,6 +9,8 @@ import { ROUTES_AVAILABLES } from "./constants/rutes";
 import Patients from "./pages/JornalApp/Patients";
 import Home from "./pages/JornalApp/Home";
 import Works from "./pages/JornalApp/Works";
+import Appointments from "./pages/JornalApp/Appointments";
+import Statistics from "./pages/JornalApp/Statistics/Statistics";
 function App() {
   return (
     <AppTheme>
@@ -34,6 +36,8 @@ function App() {
           element={
             <AppLayout>
               <Routes>
+                <Route path="" element={<Home />} />
+
                 <Route path={ROUTES_AVAILABLES.HOME.PATH} element={<Home />} />
 
                 <Route
@@ -62,7 +66,7 @@ function App() {
                 />
                 <Route
                   path={ROUTES_AVAILABLES.VIEW_APPOINTMENTS.PATH}
-                  element={<Patients />}
+                  element={<Appointments />}
                 />
                 <Route
                   path={ROUTES_AVAILABLES.VIEW_APPOINTMENT.PATH}
@@ -74,12 +78,14 @@ function App() {
                 />
                 <Route
                   path={ROUTES_AVAILABLES.DASHBOARD.PATH}
-                  element={<Patients />}
+                  element={<></>}
                 />
+
                 <Route
                   path={ROUTES_AVAILABLES.ESTATISTICS.PATH}
-                  element={<Patients />}
+                  element={<Statistics />}
                 />
+
                 <Route
                   path={ROUTES_AVAILABLES.CREATE_CLINICS.PATH}
                   element={<Patients />}

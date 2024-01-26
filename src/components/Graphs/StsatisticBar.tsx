@@ -1,7 +1,7 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
-const StsatisticBar = () => {
+const StsatisticBar = ({ titleStatistic }: any) => {
   const chartState = {
     series: [
       {
@@ -21,6 +21,10 @@ const StsatisticBar = () => {
       chart: {
         type: "bar",
         height: 350,
+      },
+      title: {
+        text: titleStatistic,
+        align: "left",
       },
       plotOptions: {
         bar: {
@@ -60,7 +64,7 @@ const StsatisticBar = () => {
       },
       tooltip: {
         y: {
-          formatter: function (val) {
+          formatter: function (val: any) {
             return "$ " + val + " thousands";
           },
         },
@@ -69,7 +73,7 @@ const StsatisticBar = () => {
   };
 
   return (
-    <div id="chart">
+    <div id="chart" className="w-full">
       <ReactApexChart
         options={chartState.options}
         series={chartState.series}

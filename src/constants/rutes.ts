@@ -75,4 +75,9 @@ export const ROUTES_AVAILABLES: any = {
     NAME: "Ver clínica",
     PATH: "/ver/clinica",
   },
+
+  VIEW_PLANING: {
+    NAME: "Planificacion",
+    PATH: "/planificacion",
+  },
 };

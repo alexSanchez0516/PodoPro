@@ -7,6 +7,10 @@ const StatisticsDonnut = () => {
       chart: {
         type: "donut",
       },
+      title: {
+        text: "Informe rentabilidad por año(%) y clínica",
+        align: "left",
+      },
       responsive: [
         {
           breakpoint: 480,
@@ -24,7 +28,7 @@ const StatisticsDonnut = () => {
   };
 
   return (
-    <div id="chart">
+    <div id="chart" className="w-full">
       <ReactApexChart
         options={chartState.options}
         series={chartState.series}

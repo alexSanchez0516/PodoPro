@@ -1,16 +1,132 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Autocomplete,
+  Checkbox,
   FormControl,
   InputAdornment,
   InputLabel,
+  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
+  SelectChangeEvent,
   TextField,
+  Typography,
 } from "@mui/material";
 import { top100Films } from "../../../constants/constants";
 import MyDatePicker from "../../DatePicker/DatePicker";
+import { useState } from "react";
+import { ToggleSwitch } from "../../Switch/Toggle";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { GridColDef, GridRenderEditCellParams } from "@mui/x-data-grid";
+import DataGridEditabled from "../../DataGridEditabled/DataGridEditabled";
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  "Oliver Hansen",
+  "Van Henry",
+  "April Tucker",
+  "Ralph Hubbard",
+  "Omar Alexander",
+  "Carlos Abbott",
+  "Miriam Wagner",
+  "Bradley Wilkerson",
+  "Virginia Andrews",
+  "Kelly Snyder",
+];
+
 const AppointmentForm = () => {
+  const [personName, setPersonName] = useState<string[]>([]);
+
+  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
+  const columns: GridColDef[] = [
+    {
+      field: "exist_associated_task",
+      headerName: "Servicio",
+      type: "string",
+      editable: false,
+      flex: 1,
+    },
+    {
+      field: "normativa_OK_1",
+      headerName: "Porcentage benef.",
+      type: "number",
+      editable: false,
+      renderCell: (params: GridRenderEditCellParams) => {
+        return (
+          <div title={params.row.branch_git} className="w-100">
+            {params.row.branch_git ?? "-"}
+          </div>
+        );
+      },
+      flex: 1,
+    },
+    {
+      field: "normativa_OK",
+      headerName: "cantidad",
+      type: "string",
+      editable: false,
+      flex: 0,
+    },
+
+    {
+      field: "state_task_jira",
+      headerName: "Importe facturado",
+      type: "number",
+      editable: false,
+      flex: 1,
+    },
+
+    {
+      field: "branch_git",
+      headerName: "Importe beneficio",
+      type: "number",
+      renderCell: (params: GridRenderEditCellParams) => {
+        return (
+          <div title={params.row.branch_git} className="w-100">
+            {params.row.branch_git ?? "-"}
+          </div>
+        );
+      },
+      editable: false,
+      flex: 1,
+    },
+    {
+      field: "comment",
+      headerName: "Observaciones",
+      type: "string",
+      renderCell: (params: GridRenderEditCellParams) => {
+        return (
+          <div className="w-100" title={params.row.comment ?? "-"}>
+            {params.row.comment ?? "-"}
+          </div>
+        );
+      },
+      editable: false,
+      flex: 2,
+    },
+  ];
+
   return (
     <>
       <FormControl fullWidth sx={{ m: 1 }}>
@@ -34,13 +150,26 @@ const AppointmentForm = () => {
         />
       </FormControl>
       <FormControl fullWidth sx={{ m: 1 }}>
-        <TextField
-          id="outlined-helperText"
-          label="Observaciones"
-          helperText="Observaciones de la cita"
+        <InputLabel htmlFor="outlined-adornment-amount">NIF/NIE/CIF</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-amount"
+          startAdornment={<InputAdornment position="start"></InputAdornment>}
+          label="NIF/NIE/CIF"
         />
       </FormControl>
 
+      <FormControl fullWidth sx={{ m: 1 }}>
+        <InputLabel htmlFor="outlined-adornment-amount">Dirección</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-amount"
+          startAdornment={<InputAdornment position="start"></InputAdornment>}
+          label="NIF/NIE/CIF"
+        />
+      </FormControl>
+
+      <FormControl fullWidth sx={{ m: 1 }}>
+        <TextField id="outlined-helperText" label="Observaciones" />
+      </FormControl>
       <FormControl fullWidth sx={{ m: 1 }}>
         <Autocomplete
           style={{ width: "100%" }}
@@ -54,6 +183,67 @@ const AppointmentForm = () => {
       <FormControl fullWidth sx={{ m: 1 }}>
         <MyDatePicker />
       </FormControl>
+
+      <FormControl className="flex" fullWidth sx={{ m: 1 }}>
+        <ToggleSwitch text={"¿Tiene Seguro?"} />
+        <ToggleSwitch
+          text={"¿El coste ha sido liquidado por el seguro, al completo?"}
+        />
+      </FormControl>
+
+      <FormControl fullWidth sx={{ m: 1 }}>
+        <Typography>
+          Añade los servicios realizados sin seguro médico
+        </Typography>
+      </FormControl>
+      <FormControl fullWidth sx={{ m: 1 }}>
+        <InputLabel id="demo-multiple-checkbox-label">Servicios</InputLabel>
+        <Select
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={personName}
+          onChange={handleChange}
+          input={<OutlinedInput label="Servicio" />}
+          renderValue={(selected) => selected.join(", ")}
+          MenuProps={MenuProps}
+        >
+          {names.map((name) => (
+            <MenuItem key={name} value={name}>
+              <Checkbox checked={personName.indexOf(name) > -1} />
+              <ListItemText primary={name} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth sx={{ m: 1 }}>
+        <Accordion defaultExpanded>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel3-content"
+            id="panel3-header"
+          >
+            Detalle de Cita
+          </AccordionSummary>
+          <AccordionDetails>
+            <DataGridEditabled
+              onlyEdit={false}
+              showHeader={false}
+              rows={[]}
+              columns={columns}
+              // onCellClick={(event: any) => onCellClick(event)}
+              hideFooterPagination={false}
+              rowCount={0}
+              rowsPerPageOptions={[50]}
+              // pagination
+              // page={1}
+              // pageSize={pageSize}
+              // onPageChange={handleNewPage}
+            ></DataGridEditabled>
+          </AccordionDetails>
+        </Accordion>
+      </FormControl>
+
       <FormControl fullWidth sx={{ m: 1 }}>
         <Autocomplete
           style={{ width: "100%" }}

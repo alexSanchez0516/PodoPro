@@ -132,3 +132,19 @@ export const TOAST = {
   ERROR: "Error en la solicitud, inténtalo más tarde.",
   UPDATE: "Actualizado correctamente",
 };
+
+export interface ModalType {
+  WORK_CENTER_CREATE: string;
+  PATIENT_CREATE: string;
+  CLINIC_CREATE: string;
+  APPOINTMENT_CREATE: string;
+  INVOICE_CREATE: string;
+}
+
+export const MODAL_TYPE: ModalType = {
+  WORK_CENTER_CREATE: "work_center_create",
+  PATIENT_CREATE: "patient_create",
+  CLINIC_CREATE: "clinic_create",
+  APPOINTMENT_CREATE: "appointment_create",
+  INVOICE_CREATE: "invoice_create",
+};

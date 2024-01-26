@@ -21,13 +21,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import GroupIcon from "@mui/icons-material/Group";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AccountCircle, BarChart, HomeWork } from "@mui/icons-material";
+import { AccountCircle, BarChartOutlined, HomeWork } from "@mui/icons-material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { ROUTES_AVAILABLES } from "../constants/rutes";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CottageIcon from "@mui/icons-material/Cottage";
 const drawerWidth = 240;
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
@@ -185,9 +186,9 @@ export const SideBar = () => {
               to={ROUTES_AVAILABLES.ESTATISTICS.PATH}
             >
               <ListItemIcon>
-                <BarChart />
+                <FaFileInvoiceDollar />
               </ListItemIcon>
-              <ListItemText primary={ROUTES_AVAILABLES.ESTATISTICS.NAME} />
+              <ListItemText primary={"Facturación"} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -200,6 +201,19 @@ export const SideBar = () => {
                 <AdminPanelSettingsIcon />
               </ListItemIcon>
               <ListItemText primary={ROUTES_AVAILABLES.DASHBOARD.NAME} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding>
+            <ListItemButton
+              component={Link}
+              onClick={() => setOpen(false)}
+              to={ROUTES_AVAILABLES.ESTATISTICS.PATH}
+            >
+              <ListItemIcon>
+                <BarChartOutlined />
+              </ListItemIcon>
+              <ListItemText primary={ROUTES_AVAILABLES.ESTATISTICS.NAME} />
             </ListItemButton>
           </ListItem>
         </List>

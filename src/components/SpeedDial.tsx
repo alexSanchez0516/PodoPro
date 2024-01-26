@@ -32,6 +32,9 @@ export default function BasicSpeedDial() {
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
+            onClick={(e: any) => {
+              console.log(e.target.dataset["testid"]);
+            }}
           />
         ))}
       </SpeedDial>

@@ -6,11 +6,13 @@ import { AppTheme } from "./theme/AppTheme";
 import { AppLayout } from "./layouts/AppLayout";
 import NotFound from "./pages/NotFound";
 import { ROUTES_AVAILABLES } from "./constants/rutes";
-import Patients from "./pages/JornalApp/Patients";
-import Home from "./pages/JornalApp/Home";
-import Works from "./pages/JornalApp/Works";
-import Appointments from "./pages/JornalApp/Appointments";
-import Statistics from "./pages/JornalApp/Statistics/Statistics";
+import Patients from "./pages/app/Patients/Patients";
+import Works from "./pages/app/WorksCenters/Works";
+import Appointments from "./pages/app/Appointments/Appointments";
+import Statistics from "./pages/app/Statistics/Statistics";
+import ControlPanel from "./pages/app/ControlPanel/ControlPanel";
+import UserProfile from "./pages/app/Profile/Profile";
+import Planing from "./pages/app/Planing/Planing";
 function App() {
   return (
     <AppTheme>
@@ -36,17 +38,20 @@ function App() {
           element={
             <AppLayout>
               <Routes>
-                <Route path="" element={<Home />} />
-
-                <Route path={ROUTES_AVAILABLES.HOME.PATH} element={<Home />} />
+                <Route path="" element={<Planing />} />
 
                 <Route
-                  path={ROUTES_AVAILABLES.SETTINGS.PATH}
-                  element={<Patients />}
+                  path={ROUTES_AVAILABLES.HOME.PATH}
+                  element={<Planing />}
+                />
+
+                <Route
+                  path={ROUTES_AVAILABLES.DASHBOARD.PATH}
+                  element={<ControlPanel />}
                 />
                 <Route
                   path={ROUTES_AVAILABLES.PROFILE.PATH}
-                  element={<Patients />}
+                  element={<UserProfile />}
                 />
                 <Route
                   path={ROUTES_AVAILABLES.CREATE_PATIENT.PATH}
@@ -101,6 +106,10 @@ function App() {
                 <Route
                   path={ROUTES_AVAILABLES.VIEW_PATIENT_HISTORY.PATH}
                   element={<Patients />}
+                />
+                <Route
+                  path={ROUTES_AVAILABLES.VIEW_PLANING.PATH}
+                  element={<Planing />}
                 />
                 <Route path="/*" element={<Navigate to="/404" />} />
                 <Route path="404" element={<NotFound />} />

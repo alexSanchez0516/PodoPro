@@ -138,13 +138,17 @@ export interface ModalType {
   PATIENT_CREATE: string;
   CLINIC_CREATE: string;
   APPOINTMENT_CREATE: string;
+  APPOINTMENT_EDIT: string;
   INVOICE_CREATE: string;
+  WORK_CENTER_EDIT: string;
 }
 
 export const MODAL_TYPE: ModalType = {
   WORK_CENTER_CREATE: "work_center_create",
+  WORK_CENTER_EDIT: "work_center_create",
   PATIENT_CREATE: "patient_create",
   CLINIC_CREATE: "clinic_create",
   APPOINTMENT_CREATE: "appointment_create",
+  APPOINTMENT_EDIT: "appointment_edit",
   INVOICE_CREATE: "invoice_create",
 };

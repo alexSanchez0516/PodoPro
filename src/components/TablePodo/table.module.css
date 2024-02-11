@@ -1,0 +1,41 @@
+.tableContainer {
+  background-color: var(--podo-white);
+  border: 1px solid var(--podo-lightgrey);
+  border-radius: 4px;
+  padding: 20px 20px 10px;
+  height: 80vh;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  line-height: 1rem;
+  font-family: var(--primary-font);
+  margin: 10px 0;
+}
+
+.tableHeaderWithTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 1rem;
+  font-family: var(--primary-font);
+  margin: 10px 0;
+}
+.toolbar_item {
+  cursor: pointer;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.MuiDataGrid-row:hover
+  .MuiDataGrid-row.Mui-hovered
+  .MuiDataGrid-row.Mui-selected
+  .MuiDataGrid-row.Mui-selected:hover {
+  background-color: var(--podo-grey-hover) !important;
+}
+
+.MuiDataGrid {
+  font-family: var(--primary-font) !important;
+}

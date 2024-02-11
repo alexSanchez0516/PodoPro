@@ -167,7 +167,7 @@ export const SideBar = () => {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
+          {/* <ListItem disablePadding>
             <ListItemButton
               component={Link}
               onClick={() => setOpen(false)}
@@ -178,7 +178,7 @@ export const SideBar = () => {
               </ListItemIcon>
               <ListItemText primary={ROUTES_AVAILABLES.VIEW_CLINICS.NAME} />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem disablePadding>
             <ListItemButton
               component={Link}

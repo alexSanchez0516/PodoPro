@@ -1,24 +1,33 @@
 import axios from "axios";
-import { Appointment } from "../../interfaces/interfaces";
-
-const API_URL = "URL_DEL_API"; // Reemplaza con la URL de tu API
+import {
+  AppointmentRequestPOST,
+  AppointmentResponseGETFullPopulate,
+  AppointmentResponseGETFullPopulateById,
+} from "../../interfaces/appointment";
+import { API_URL_STRAPI } from "../../constants/endpoints";
 
 const appointmentService = {
-  getAllAppointments: async (): Promise<Appointment[]> => {
-    const response = await axios.get<Appointment[]>(`${API_URL}/appointments`);
-    return response.data;
-  },
-
-  getAppointmentById: async (id: number): Promise<Appointment> => {
-    const response = await axios.get<Appointment>(
-      `${API_URL}/appointments/${id}`
+  getAllAppointments: async (): Promise<AppointmentResponseGETFullPopulate> => {
+    const response = await axios.get<AppointmentResponseGETFullPopulate>(
+      `${API_URL_STRAPI}/appointments?populate=*`
     );
     return response.data;
   },
 
-  addAppointment: async (appointment: Appointment): Promise<Appointment> => {
-    const response = await axios.post<Appointment>(
-      `${API_URL}/appointments`,
+  getAppointmentById: async (
+    id: number
+  ): Promise<AppointmentResponseGETFullPopulateById> => {
+    const response = await axios.get<AppointmentResponseGETFullPopulateById>(
+      `${API_URL_STRAPI}/appointments/${id}`
+    );
+    return response.data;
+  },
+
+  addAppointment: async (
+    appointment: AppointmentRequestPOST
+  ): Promise<AppointmentResponseGETFullPopulateById> => {
+    const response = await axios.post<AppointmentResponseGETFullPopulateById>(
+      `${API_URL_STRAPI}/appointments`,
       appointment
     );
     return response.data;
@@ -26,17 +35,17 @@ const appointmentService = {
 
   updateAppointment: async (
     id: number,
-    appointment: Appointment
-  ): Promise<Appointment> => {
-    const response = await axios.put<Appointment>(
-      `${API_URL}/appointments/${id}`,
+    appointment: AppointmentRequestPOST
+  ): Promise<AppointmentResponseGETFullPopulateById> => {
+    const response = await axios.put<AppointmentResponseGETFullPopulateById>(
+      `${API_URL_STRAPI}/appointments/${id}`,
       appointment
     );
     return response.data;
   },
 
   deleteAppointment: async (id: number): Promise<void> => {
-    await axios.delete(`${API_URL}/appointments/${id}`);
+    await axios.delete(`${API_URL_STRAPI}/appointments/${id}`);
   },
 };
 

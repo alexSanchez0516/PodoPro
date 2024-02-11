@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root {
+  --primary-font: "lis-title", sans-serif;
+  --secondary-font: "lis-body", sans-serif;
+  --podo-primary-color: #041c2c;
+  --podo-primary-light: #234158;
+  --podo-black: #1f2020;
+  --podo-white: #f9fafa;
+  --podo-grey: #bbbcbc;
+  --podo-lightgrey: #dedfdf;
+  --podo-grey-hover: #eceded;
+  --podo-lightblue: #0088a6;
+  --podo-green: #00b176;
+  --podo-green-dark: #037951;
+  --podo-orange: #ff7f32;
+  --podo-yellow: #ffcc43;
+  --podo-red: #a53b24;
+  --detail-text-color: #5f6060;
+  --background-color: #f4f5f5;
+}

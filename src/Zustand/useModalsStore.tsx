@@ -5,27 +5,29 @@ import { MODAL_TYPE } from "../constants/constants"; // Asumiendo que MODAL_TYPE
 
 export interface State {
   [x: string]: any;
-  showWorkCenterCreate: boolean;
+  showEditWorkCenter: boolean;
   showPatientCreate: boolean;
   showClinicCreate: boolean;
   showAppointmentCreate: boolean;
+  showAppointmentEdit: boolean;
   showInvoiceCreate: boolean;
   toggleModal: (type: string) => void;
 }
-    
+
 export const useModalsStore = create<State>()(
   devtools((set) => ({
-    showWorkCenterCreate: false,
+    showEditWorkCenter: false,
     showPatientCreate: false,
     showClinicCreate: false,
     showAppointmentCreate: false,
+    showAppointmentEdit: false,
     showInvoiceCreate: false,
     toggleModal: (type: string) => {
       switch (type) {
-        case MODAL_TYPE.WORK_CENTER_CREATE:
+        case MODAL_TYPE.WORK_CENTER_EDIT:
           set((state) => ({
             ...state,
-            showWorkCenterCreate: !state.showWorkCenterCreate,
+            showEditWorkCenter: !state.showEditWorkCenter,
           }));
           break;
         case MODAL_TYPE.PATIENT_CREATE:
@@ -44,6 +46,12 @@ export const useModalsStore = create<State>()(
           set((state) => ({
             ...state,
             showAppointmentCreate: !state.showAppointmentCreate,
+          }));
+          break;
+        case MODAL_TYPE.APPOINTMENT_EDIT:
+          set((state) => ({
+            ...state,
+            showAppointmentEdit: !state.showAppointmentEdit,
           }));
           break;
         case MODAL_TYPE.INVOICE_CREATE:

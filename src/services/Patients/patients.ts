@@ -1,34 +1,46 @@
 import axios from "axios";
-import { Patient } from "../../interfaces/interfaces";
-
-const API_URL = "URL_DEL_API"; // Reemplaza con la URL de tu API
+import {
+  AppointmentRequestGetPopulateByID,
+  Patient,
+  PatientResponseGETFullPopulate,
+} from "../../interfaces/interfaces";
+import { API_URL_STRAPI } from "../../constants/endpoints";
 
 const patientService = {
-  getAllPatients: async (): Promise<Patient[]> => {
-    const response = await axios.get<Patient[]>(`${API_URL}/patients`);
+  getAllPatients: async (): Promise<PatientResponseGETFullPopulate> => {
+    const response = await axios.get<PatientResponseGETFullPopulate>(
+      `${API_URL_STRAPI}/patients?populate=*`
+    );
     return response.data;
   },
 
-  getPatientById: async (id: number): Promise<Patient> => {
-    const response = await axios.get<Patient>(`${API_URL}/patients/${id}`);
+  getPatientById: async (
+    id: number | string
+  ): Promise<AppointmentRequestGetPopulateByID> => {
+    const response = await axios.get<AppointmentRequestGetPopulateByID>(
+      `${API_URL_STRAPI}/patients/${id}?populate=*`
+    );
     return response.data;
   },
 
   addPatient: async (patient: Patient): Promise<Patient> => {
-    const response = await axios.post<Patient>(`${API_URL}/patients`, patient);
+    const response = await axios.post<Patient>(
+      `${API_URL_STRAPI}/patients`,
+      patient
+    );
     return response.data;
   },
 
   updatePatient: async (id: number, patient: Patient): Promise<Patient> => {
     const response = await axios.put<Patient>(
-      `${API_URL}/patients/${id}`,
+      `${API_URL_STRAPI}/patients/${id}`,
       patient
     );
     return response.data;
   },
 
   deletePatient: async (id: number): Promise<void> => {
-    await axios.delete(`${API_URL}/patients/${id}`);
+    await axios.delete(`${API_URL_STRAPI}/patients/${id}`);
   },
 };
 

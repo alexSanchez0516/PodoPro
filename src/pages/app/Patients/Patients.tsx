@@ -3,6 +3,7 @@ import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import {
   Autocomplete,
+  Avatar,
   Button,
   Card,
   FormControlLabel,
@@ -12,19 +13,41 @@ import {
   Typography,
 } from "@mui/material";
 import MyDatePicker from "../../../components/DatePicker/DatePicker";
-import {
-  GridColDef,
-  GridExpandMoreIcon,
-  GridRenderEditCellParams,
-  GridSearchIcon,
-  GridValueGetterParams,
-} from "@mui/x-data-grid";
+import { GridColDef, GridSearchIcon } from "@mui/x-data-grid";
 import { top100Films } from "../../../constants/constants";
 import Exports from "../../../components/Buttons/Exports";
-import { Add, Create, Delete, Edit } from "@mui/icons-material";
-import DataGridEditabled from "../../../components/DataGridEditabled/DataGridEditabled";
+import { Create, Delete, Edit } from "@mui/icons-material";
 import { FaRegFileExcel } from "react-icons/fa";
+import patientService from "../../../services/Patients/patients";
+import {
+  Meta,
+  PatientResponseGETFullPopulate,
+} from "../../../interfaces/interfaces";
+import { useEffect, useState } from "react";
+import { API_URL_STRAPI_FILES } from "../../../constants/endpoints";
+import { FaEye } from "react-icons/fa6";
+import { usePodoTable } from "../../../hooks/usePodoTable";
+import { PodoTable } from "../../../components/TablePodo/Table";
+import { useTableCrudBasic } from "../../../hooks/useTableCrudBasic";
+import { toast } from "sonner";
+
 export default function Patients() {
+  const {
+    rows,
+    handleAddRow,
+    handleCancelClick,
+    handleDeleteClick,
+    handleEditClick,
+    handleSaveClick,
+    rowModesModel,
+    setRowModesModel,
+    setRows,
+  } = usePodoTable();
+  const { handleService } = useTableCrudBasic();
+
+  const [loading, setLoading] = useState(true);
+  const [dataPaginate, setDataPaginate] = useState<Meta>();
+  const [listPatients, setListPatients] = useState<any>([]);
   const columns: GridColDef[] = [
     {
       field: "name",
@@ -42,6 +65,21 @@ export default function Patients() {
     },
 
     {
+      field: "img_profile",
+      headerName: "Imagen",
+      type: "string",
+      editable: true,
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <>
+            <Avatar src={params?.row?.img_profile} />
+          </>
+        );
+      },
+    },
+
+    {
       field: "location",
       headerName: "Dirección",
       type: "string",
@@ -49,7 +87,7 @@ export default function Patients() {
       flex: 2,
     },
     {
-      field: "num_document",
+      field: "tax_name",
       headerName: "NIF/NIE/CIF",
       type: "string",
       editable: true,
@@ -57,20 +95,61 @@ export default function Patients() {
     },
 
     {
-      field: "tel",
+      field: "phone",
       headerName: "Teléfono",
+      type: "string",
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      type: "string",
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: "health_insurance",
+      headerName: "Seguro médico",
+      type: "boolean",
+      editable: true,
+      flex: 1,
+    },
+
+    {
+      field: "createdAt",
+      headerName: "Fecha de alta",
       type: "string",
       editable: true,
       flex: 1,
     },
 
     {
+      field: "active",
+      headerName: "Activo",
+      type: "boolean",
+      editable: true,
+      flex: 1,
+    },
+
+    {
       field: "actions",
-      width: 140,
+      width: 200,
+      headerAlign: "center",
       headerName: "Acciones",
       renderCell: () => {
         return (
           <div className="w-full">
+            <Button
+              onClick={() => {
+                console.log("hizo click");
+                // toggleModal(MODAL_TYPE.WORK_CENTER_EDIT);
+              }}
+              color="primary"
+              className=""
+            >
+              <FaEye />
+            </Button>
             <Button color="primary" className="">
               <Edit />
             </Button>
@@ -83,9 +162,74 @@ export default function Patients() {
     },
   ];
 
+  const handleError = (row: any) => {
+    if (!row.number) {
+      toast.error("Compruebe los campos");
+      throw Error();
+    }
+  };
+  const handleChangeRows = (newRow: any, oldRow: any) => {
+    setRows(
+      rows.map((row: any) => (row.id === oldRow.id ? newRow : row))
+      // .sort((a: Percentage, b: Percentage) => a.number - b.number) //Ordenar de forma ascendente al insertar nuevo dato
+    );
+  };
+
+  useEffect(() => {
+    patientService
+      .getAllPatients()
+      .then((response: PatientResponseGETFullPopulate) => {
+        const mappedData = response.data.map((patient) => {
+          const workCenters = patient.attributes.work_centers.data;
+
+          return {
+            id: patient.id,
+            name: patient.attributes.name,
+            last_name: patient.attributes.last_name,
+            active: patient.attributes.active,
+            country: patient.attributes.country,
+            city: patient.attributes.city,
+            code_postal: patient.attributes.code_postal,
+            tax_name: patient.attributes.tax_name,
+            location: patient.attributes.location,
+            createdAt: patient.attributes.createdAt,
+            updatedAt: patient.attributes.updatedAt,
+            publishedAt: patient.attributes.publishedAt,
+            phone: patient.attributes.phone,
+            isMale: patient.attributes.isMale,
+            email: patient.attributes.email,
+            notes: patient.attributes.notes,
+            health_insurance: patient.attributes.health_insurance ?? false,
+            work_centers_id: workCenters.map(
+              (workCenter: any) => workCenter.id
+            ),
+            work_centers_name: workCenters.map(
+              (workCenter: any) => workCenter.attributes.name
+            ),
+            img_profile:
+              API_URL_STRAPI_FILES +
+              patient.attributes.img_profile.data?.attributes.url,
+          };
+        });
+        console.log({ mappedData });
+        setListPatients(mappedData);
+        setDataPaginate(response.meta);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <>
-      <Box sx={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          margin: "0 1rem 0 1rem",
+          width: "100%",
+        }}
+      >
         <Card className="w-full md:mx-5">
           <div className="flex flex-col p-5 justify-center items-center flex-wrap w-full mt-5">
             <Typography variant="h3" className="ml-5 pb-8 text-center">
@@ -164,165 +308,53 @@ export default function Patients() {
         </Card>
 
         <div className="md:my-8 md:mx-5 w-full flex flex-col items-center">
-          <DataGridEditabled
-            onlyEdit={false}
-            showHeader={false}
-            rows={[
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-              {
-                id: "1212ABCSD",
-                name: "Cristina",
-                last_name: "Holgado perez",
-                location: "123 Main St, City",
-                num_document: "123456789",
-                tel: "555-1234",
-              },
-              {
-                id: "ABYTD3434",
-                name: "Alexander",
-                last_name: "sacnehz villegas",
-                location: "456 Oak St, Town",
-                num_document: "987654321",
-                tel: "555-5678",
-              },
-            ]}
+          <PodoTable
+            rows={listPatients as unknown}
+            setRowModesModel={setRowModesModel}
+            setRows={setRows}
+            rowModesModel={rowModesModel}
             columns={columns}
-            // onCellClick={(event: any) => onCellClick(event)}
-            hideFooterPagination={false}
-            rowCount={0}
-            rowsPerPageOptions={[50]}
-            // pagination
-            // page={1}
-            // pageSize={pageSize}
-            // onPageChange={handleNewPage}
-          ></DataGridEditabled>
+            columnVisibilityModel={{ id: false, id_year: false }}
+            // globalActions={
+            //   editable
+            //     ? [
+            //         {
+            //           Icon: icons.InfoIcon,
+            //           tooltip: "Información",
+            //           action: () => setOpenInfoModal(true),
+            //         },
+            //         {
+            //           Icon: icons.AddCircleIcon,
+            //           tooltip: "Añadir",
+            //           action: () => handleAddRow(),
+            //         },
+            //       ]
+            //     : [
+            //         {
+            //           Icon: icons.InfoIcon,
+            //           tooltip: "Información",
+            //           action: () => setOpenInfoModal(true),
+            //         },
+            //       ]
+            // }
+            // updateService={(row: Percentage) => {
+            //   handleError(row);
+            //   handleService({
+            //     row,
+            //     service: updatePercentage,
+            //     action: handleChangeRows,
+            //   });
+            // }}
+            // postService={(row: Percentage) => {
+            //   handleError(row);
+            //   handleService({
+            //     row,
+            //     service: createPercentage,
+            //     action: handleChangeRows,
+            //   });
+            // }}
+            loading={loading}
+          ></PodoTable>
         </div>
       </Box>
     </>

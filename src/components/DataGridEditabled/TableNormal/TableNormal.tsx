@@ -103,7 +103,7 @@ function TableNormal(props: any) {
       }}
     >
       <DataGrid
-        onCellClick={(event) => props.onCellClick(event)}
+        // onCellClick={(event) => props.onCellClick(event)}
         localeText={{
           toolbarExport: "",
           toolbarExportCSV: "Descargar CSV",

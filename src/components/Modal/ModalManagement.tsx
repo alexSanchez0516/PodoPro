@@ -1,16 +1,22 @@
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 import { MODAL_TYPE } from "../../constants/constants";
-import { useModalsStore } from "../../Zustand/useModalsStore";
+import { useModalsStore } from "../../zustand/useModalsStore";
+import { CustomModalPodo } from "./CustomModal";
+import Statistics from "../../pages/app/Statistics/Statistics";
+import View from "../Appointment/View";
 
 export const ModalManagement = () => {
   const toggleModal = useModalsStore((state) => state.toggleModal);
   const showCreatePatient = useModalsStore((state) => state.showPatientCreate);
-  const showCreateWorkCenter = useModalsStore(
-    (state) => state.showWorkCenterCreate
+  const showEditWorkCenter = useModalsStore(
+    (state) => state.showEditWorkCenter
   );
   const showClinicCreate = useModalsStore((state) => state.showClinicCreate);
   const showAppointmentCreate = useModalsStore(
     (state) => state.showAppointmentCreate
+  );
+  const showAppointmentEdit = useModalsStore(
+    (state) => state.showAppointmentEdit
   );
   const showInvoiceCreate = useModalsStore((state) => state.showInvoiceCreate);
 
@@ -18,33 +24,27 @@ export const ModalManagement = () => {
     toggleModal(type);
   };
 
+  console.log("showEditWorkCenter --> ", showEditWorkCenter);
   return (
     <>
-      <Modal
+      <CustomModalPodo
+        width={80}
+        large
+        body={<>sdsd</>}
         open={showCreatePatient}
-        onClose={() => handleClose(MODAL_TYPE.PATIENT_CREATE)}
-      >
-        {/* Contenido del modal para createPatient */}
-        <div>
-          <h2>Create Patient Modal</h2>
-          <Button onClick={() => handleClose(MODAL_TYPE.PATIENT_CREATE)}>
-            Close
-          </Button>
-        </div>
-      </Modal>
+        handleClose={() => handleClose(MODAL_TYPE.PATIENT_CREATE)}
+        title={"Crear Paciente"}
+      ></CustomModalPodo>
 
-      <Modal
-        open={showCreateWorkCenter}
-        onClose={() => handleClose(MODAL_TYPE.WORK_CENTER_CREATE)}
-      >
-        {/* Contenido del modal para createWorkCenter */}
-        <div>
-          <h2>Create Work Center Modal</h2>
-          <Button onClick={() => handleClose(MODAL_TYPE.WORK_CENTER_CREATE)}>
-            Close
-          </Button>
-        </div>
-      </Modal>
+      <CustomModalPodo
+        width={80}
+        large
+        wide={true}
+        body={<Statistics />}
+        open={showEditWorkCenter}
+        handleClose={() => handleClose(MODAL_TYPE.WORK_CENTER_CREATE)}
+        title={"Editar Clínica"}
+      ></CustomModalPodo>
 
       <Modal
         open={showClinicCreate}
@@ -59,18 +59,25 @@ export const ModalManagement = () => {
         </div>
       </Modal>
 
-      <Modal
+      <CustomModalPodo
+        width={80}
+        large
+        wide={true}
+        body={<View />}
+        open={showAppointmentEdit}
+        handleClose={() => handleClose(MODAL_TYPE.APPOINTMENT_EDIT)}
+        title={"Identificador Cita ADC234"}
+      ></CustomModalPodo>
+
+      <CustomModalPodo
+        width={80}
+        large
+        wide={true}
+        body={<View />}
         open={showAppointmentCreate}
-        onClose={() => handleClose(MODAL_TYPE.APPOINTMENT_CREATE)}
-      >
-        {/* Contenido del modal para appointmentCreate */}
-        <div>
-          <h2>Appointment Create Modal</h2>
-          <Button onClick={() => handleClose(MODAL_TYPE.APPOINTMENT_CREATE)}>
-            Close
-          </Button>
-        </div>
-      </Modal>
+        handleClose={() => handleClose(MODAL_TYPE.APPOINTMENT_CREATE)}
+        title={"Crear Cita"}
+      ></CustomModalPodo>
 
       <Modal
         open={showInvoiceCreate}

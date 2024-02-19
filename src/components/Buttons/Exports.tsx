@@ -8,11 +8,13 @@ interface ExportsProps {
   data?: any; // Tipo de los datos que se utilizarán en las exportaciones (ajusta según tu estructura de datos)
 }
 
-const Exports: React.FC<ExportsProps> = ({
-  fnExportPdf,
-  fnExportExcel,
-  data,
-}) => {
+const Exports: React.FC<ExportsProps> = (
+  {
+    // fnExportPdf,
+    // fnExportExcel,
+    // data,
+  }
+) => {
   return (
     <>
       <Button

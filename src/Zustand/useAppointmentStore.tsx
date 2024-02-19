@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { AppointmentData } from "../interfaces/appointment";
+import { AppointmentData } from "../interfaces/Appointment/appointment";
 
 interface AppointmentState {
   appointment: AppointmentData | null;

@@ -25,7 +25,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { GridDeleteIcon } from "@mui/x-data-grid";
 import SaveIcon from "@mui/icons-material/Save";
-import { AppointmentRequestPOST } from "../../../interfaces/appointment";
+import { AppointmentRequestPOST } from "../../../interfaces/Appointment/appointment";
 import { useAppointmentStore } from "../../../zustand/useAppointmentStore";
 import { usePodoTable } from "../../../hooks/usePodoTable";
 import { useTableCrudBasic } from "../../../hooks/useTableCrudBasic";
@@ -103,7 +103,6 @@ const AppointmentForm = () => {
           colour: appointment?.colour ?? null,
           paid_all_insurance: appointment?.paid_all_insurance ?? null,
           date_paid: appointment?.date_paid ?? new Date(),
-          services: appointment?.services ?? [],
           benefit: appointment?.benefit ?? 0,
         },
       };
@@ -445,6 +444,7 @@ const AppointmentForm = () => {
       <div className="w-full flex mt-2">
         <FormControl fullWidth sx={{ m: 1 }}>
           <Autocomplete
+            freeSolo
             style={{ width: "100%" }}
             disablePortal
             id="combo-box-demo"
@@ -555,6 +555,7 @@ const AppointmentForm = () => {
         <Autocomplete
           style={{ width: "100%" }}
           disablePortal
+          freeSolo
           id="combo-box-demo"
           options={top100Films}
           sx={{ width: 300 }}
@@ -582,23 +583,7 @@ const AppointmentForm = () => {
           startAdornment: <InputAdornment position="start">€</InputAdornment>,
         }}
       />
-      {/* <FormControl fullWidth sx={{ m: 1 }}>
-        <InputLabel id="demo-simple-select-helper-label">Impuesto</InputLabel>
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          value={10}
-          label="Impuesto"
-          //   onChange={handleChange}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {listPorcetagesTaxes.map((taxe, index: number) => (
-            <MenuItem value={10}>taxe.</MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
+
       <FormControl fullWidth sx={{ m: 1 }}>
         <Autocomplete
           style={{ width: "100%" }}

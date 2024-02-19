@@ -3,7 +3,7 @@ import {
   AppointmentRequestPOST,
   AppointmentResponseGETFullPopulate,
   AppointmentResponseGETFullPopulateById,
-} from "../../interfaces/appointment";
+} from "../../interfaces/Appointment/appointment";
 import { API_URL_STRAPI } from "../../constants/endpoints";
 
 const appointmentService = {

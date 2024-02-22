@@ -103,17 +103,6 @@ export function PodoTable(props: AedasTableProps) {
   };
 
   const processRowUpdate = async (newRow: GridRowModel) => {
-    // newRow.isNew &&
-    //   (await props.postService(newRow).catch((error: any) => {
-    //     throw Error(error.message);
-    //   }));
-    // !newRow.isNew &&
-    //   (await props.updateService(newRow).catch((error: any) => {
-    //     throw Error(error.message);
-    //   }));
-    // const updatedRow = { ...newRow, isNew: false };
-    // setRows(rows.map((row: any) => (row.id === newRow.id ? updatedRow : row)));
-    // return updatedRow;
     try {
       if (newRow.isNew) {
         await props.postService(newRow);

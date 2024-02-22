@@ -35,6 +35,8 @@ import { useFormik } from "formik";
 import patientService from "../../../services/Patients/patients";
 import { TaxImpRequestGET } from "../../../interfaces/interfaces";
 import controlsService from "../../../services/Control/controls";
+import clinicService from "../../../services/Clinics/clinics";
+import { GetWorkCenterByID } from "../../../interfaces/WorkCenter/interfacesWorkCenter";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,7 +64,9 @@ const names = [
 
 const AppointmentForm = () => {
   const [loading, setLoading] = useState(false);
+  const [workCenters, setworkCenters] = useState([]);
   const [loadingTaxes, setLoadingTaxes] = useState(true);
+  const [services, setServices] = useState([]);
   const [listPorcetagesTaxes, setListPorcetagesTaxes] = useState<any[]>([]);
   const [personName, setPersonName] = useState<string[]>([]);
   const {
@@ -305,6 +309,16 @@ const AppointmentForm = () => {
             response?.data?.attributes?.health_insurance ?? null
           );
         });
+
+      clinicService.getAllClinics().then((response: any) => {
+        const workCentersMapped = response.data.map((item: any) => ({
+          id: item.id,
+          label: item.attributes.name,
+        }));
+        console.log({ workCentersMapped });
+        setworkCenters(workCentersMapped);
+        console.log({ response });
+      });
     }
   }, [appointment]);
 
@@ -448,7 +462,7 @@ const AppointmentForm = () => {
             style={{ width: "100%" }}
             disablePortal
             id="combo-box-demo"
-            options={top100Films}
+            options={workCenters}
             sx={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Clinica" />}
           />
@@ -507,44 +521,6 @@ const AppointmentForm = () => {
               rowModesModel={rowModesModel}
               columns={columns}
               columnVisibilityModel={{ id: false, id_year: false }}
-              // globalActions={
-              //   editable
-              //     ? [
-              //         {
-              //           Icon: icons.InfoIcon,
-              //           tooltip: "Información",
-              //           action: () => setOpenInfoModal(true),
-              //         },
-              //         {
-              //           Icon: icons.AddCircleIcon,
-              //           tooltip: "Añadir",
-              //           action: () => handleAddRow(),
-              //         },
-              //       ]
-              //     : [
-              //         {
-              //           Icon: icons.InfoIcon,
-              //           tooltip: "Información",
-              //           action: () => setOpenInfoModal(true),
-              //         },
-              //       ]
-              // }
-              // updateService={(row: Percentage) => {
-              //   handleError(row);
-              //   handleService({
-              //     row,
-              //     service: updatePercentage,
-              //     action: handleChangeRows,
-              //   });
-              // }}
-              // postService={(row: Percentage) => {
-              //   handleError(row);
-              //   handleService({
-              //     row,
-              //     service: createPercentage,
-              //     action: handleChangeRows,
-              //   });
-              // }}
               loading={loading}
             ></PodoTable>
           </AccordionDetails>

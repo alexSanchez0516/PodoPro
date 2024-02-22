@@ -7,37 +7,37 @@ import {
 } from "../../interfaces/WorkCenter/interfacesWorkCenter";
 
 const clinicService = {
-  getAllClinics: async (): Promise<GetWorkCenterAll> => {
+  getAllServices: async (): Promise<GetWorkCenterAll> => {
     const response = await axios.get<GetWorkCenterAll>(
-      `${API_URL_STRAPI}/work-centers`
+      `${API_URL_STRAPI}/service`
     );
     return response.data;
   },
 
-  getClinicById: async (id: number): Promise<GetWorkCenterByID> => {
+  getServiceById: async (id: number): Promise<GetWorkCenterByID> => {
     const response = await axios.get<GetWorkCenterByID>(
-      `${API_URL_STRAPI}/work-centers/${id}`
+      `${API_URL_STRAPI}/service/${id}`
     );
     return response.data;
   },
 
-  addClinic: async (clinic: Clinic): Promise<Clinic> => {
+  addService: async (service: Clinic): Promise<Clinic> => {
     const response = await axios.post<Clinic>(
-      `${API_URL_STRAPI}/work-centers`,
-      clinic
+      `${API_URL_STRAPI}/service`,
+      service
     );
     return response.data;
   },
 
-  updateClinic: async (id: number, clinic: Clinic): Promise<Clinic> => {
+  updateService: async (id: number, service: Clinic): Promise<Clinic> => {
     const response = await axios.put<Clinic>(
-      `${API_URL_STRAPI}/work-centers/${id}`,
-      clinic
+      `${API_URL_STRAPI}/service/${id}`,
+      service
     );
     return response.data;
   },
 
-  deleteClinic: async (id: number): Promise<void> => {
+  deleteService: async (id: number): Promise<void> => {
     await axios.delete(`${API_URL_STRAPI}/work-centers/${id}`);
   },
 };

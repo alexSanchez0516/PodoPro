@@ -6,10 +6,20 @@ import {
   GetWorkCenterByID,
 } from "../../interfaces/WorkCenter/interfacesWorkCenter";
 
-const clinicService = {
+const serviceWorkCenter = {
   getAllServices: async (): Promise<GetWorkCenterAll> => {
     const response = await axios.get<GetWorkCenterAll>(
       `${API_URL_STRAPI}/service`
+    );
+    return response.data;
+  },
+
+  getAllServicesByClinic: async (
+    idWorkcenter: number | string,
+    userId: number | string = 1
+  ): Promise<GetWorkCenterAll> => {
+    const response = await axios.get<GetWorkCenterAll>(
+      `${API_URL_STRAPI}/services-work-centers?populate=*&filters[work_center][id][$eq]=${idWorkcenter}&filters[user_id][id][$eq]=${userId}`
     );
     return response.data;
   },
@@ -42,4 +52,4 @@ const clinicService = {
   },
 };
 
-export default clinicService;
+export default serviceWorkCenter;

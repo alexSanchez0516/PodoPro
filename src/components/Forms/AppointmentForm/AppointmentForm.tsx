@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import {
   Accordion,
   AccordionDetails,
@@ -15,11 +23,19 @@ import {
   TextField,
   Typography,
   Button,
+  Chip,
+  Box,
+  Tooltip,
 } from "@mui/material";
 import { top100Films } from "../../../constants/constants";
 import { useEffect, useMemo, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { GridColDef, GridRenderEditCellParams } from "@mui/x-data-grid";
+import {
+  GridActionsCellItem,
+  GridCellParams,
+  GridColDef,
+  GridRenderEditCellParams,
+} from "@mui/x-data-grid";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -36,7 +52,12 @@ import patientService from "../../../services/Patients/patients";
 import { TaxImpRequestGET } from "../../../interfaces/interfaces";
 import controlsService from "../../../services/Control/controls";
 import clinicService from "../../../services/Clinics/clinics";
-import { GetWorkCenterByID } from "../../../interfaces/WorkCenter/interfacesWorkCenter";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import serviceWorkCenter from "../../../services/Services/services";
+import locationAppointment from "../../../services/Appointment/locationsAppointment";
+import dayjs from "dayjs";
+import appointmentLines from "../../../services/Appointment/appointmentLine";
+import icons from "../../../Utils/icons";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,41 +70,18 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
 const AppointmentForm = () => {
   const [loading, setLoading] = useState(false);
   const [workCenters, setworkCenters] = useState([]);
   const [loadingTaxes, setLoadingTaxes] = useState(true);
-  const [services, setServices] = useState([]);
   const [listPorcetagesTaxes, setListPorcetagesTaxes] = useState<any[]>([]);
   const [personName, setPersonName] = useState<string[]>([]);
-  const {
-    rows,
-    handleAddRow,
-    handleCancelClick,
-    handleDeleteClick,
-    handleEditClick,
-    handleSaveClick,
-    rowModesModel,
-    setRowModesModel,
-    setRows,
-  } = usePodoTable();
+
   const { appointment, saveAppointment, updateAppointment } =
     useAppointmentStore();
-  const { handleService } = useTableCrudBasic();
 
+  const { handleService } = useTableCrudBasic();
+  const [listServices, setListServices] = useState([]);
   const formikCreateAppointment = useFormik<any>({
     initialValues: useMemo(() => {
       return {
@@ -93,6 +91,7 @@ const AppointmentForm = () => {
           patient: appointment?.patient_id ?? null,
           employee: appointment?.employee_id ?? null,
           work_center: appointment?.work_center_id ?? null,
+          location_appointment_id: appointment?.location_appointment_id ?? null,
           finish: appointment?.finish ?? false,
           paid: appointment?.paid ?? false,
           reminder_send: appointment?.reminder_send ?? false,
@@ -108,6 +107,7 @@ const AppointmentForm = () => {
           paid_all_insurance: appointment?.paid_all_insurance ?? null,
           date_paid: appointment?.date_paid ?? new Date(),
           benefit: appointment?.benefit ?? 0,
+          services: [],
         },
       };
     }, [appointment]),
@@ -117,7 +117,13 @@ const AppointmentForm = () => {
       setSubmitting(false);
     },
   });
+  const [porcentageBenefitsEmployee, setPorcentageBenefitsEmployee] = useState(
+    []
+  );
 
+  const [porcentageDiscountService, setPorcentageDiscountService] = useState(
+    []
+  );
   const formikPatientAppointment = useFormik<any>({
     initialValues: useMemo(() => {
       return {
@@ -146,11 +152,15 @@ const AppointmentForm = () => {
       setSubmitting(false);
     },
   });
-
+  const [rowsForServicesByClinic, setRowsForServicesByClinic] = useState([]);
+  const [listLocationsAppointment, setListLocationsAppointment] = useState([]);
+  const [listServicesAppointment, setListServicesAppointment] = useState([]);
   console.log({ appointment });
 
   console.log(formikCreateAppointment.values);
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  const handleChangeServices = (
+    event: SelectChangeEvent<typeof personName>
+  ) => {
     const {
       target: { value },
     } = event;
@@ -159,88 +169,6 @@ const AppointmentForm = () => {
       typeof value === "string" ? value.split(",") : value
     );
   };
-
-  const handleError = (row: any) => {
-    if (!row.number) {
-      toast.error("Compruebe los campos");
-      throw Error();
-    }
-  };
-  const handleChangeRows = (newRow: any, oldRow: any) => {
-    setRows(rows.map((row: any) => (row.id === oldRow.id ? newRow : row)));
-  };
-
-  const columns: GridColDef[] = [
-    {
-      field: "exist_associated_task",
-      headerName: "Servicio",
-      type: "string",
-      editable: false,
-      flex: 1,
-    },
-    {
-      field: "normativa_OK_1",
-      headerName: "Porcentage benef.",
-      type: "number",
-      editable: false,
-      renderCell: (params: GridRenderEditCellParams) => {
-        return (
-          <div title={params.row.branch_git} className="w-100">
-            {params.row.branch_git ?? "-"}
-          </div>
-        );
-      },
-      flex: 1,
-    },
-    {
-      field: "normativa_OK",
-      headerName: "cantidad",
-      type: "string",
-      editable: false,
-      flex: 0,
-    },
-
-    {
-      field: "state_task_jira",
-      headerName: "Importe facturado",
-      type: "number",
-      editable: false,
-      flex: 1,
-    },
-
-    {
-      field: "branch_git",
-      headerName: "Importe beneficio",
-      type: "number",
-      renderCell: (params: GridRenderEditCellParams) => {
-        return (
-          <div title={params.row.branch_git} className="w-100">
-            {params.row.branch_git ?? "-"}
-          </div>
-        );
-      },
-      editable: false,
-      flex: 1,
-    },
-    {
-      field: "comment",
-      headerName: "Observaciones",
-      type: "string",
-      renderCell: (params: GridRenderEditCellParams) => {
-        return (
-          <div className="w-100" title={params.row.comment ?? "-"}>
-            {params.row.comment ?? "-"}
-          </div>
-        );
-      },
-      editable: false,
-      flex: 2,
-    },
-  ];
-
-  // if (!appointment) {
-  //   return "Cargando...";
-  // }
 
   useEffect(() => {
     if (appointment?.id) {
@@ -315,38 +243,95 @@ const AppointmentForm = () => {
           id: item.id,
           label: item.attributes.name,
         }));
-        console.log({ workCentersMapped });
         setworkCenters(workCentersMapped);
-        console.log({ response });
       });
+
+      controlsService
+        .getAllTaxes()
+        .then((response: TaxImpRequestGET) => {
+          setListPorcetagesTaxes(
+            response.data.map(({ id, attributes }) => ({
+              id,
+              label: `${attributes.name} - ${attributes.porcentage}%`,
+            }))
+          );
+        })
+        .finally(() => {
+          setLoadingTaxes(false);
+        });
+
+      serviceWorkCenter
+        .getAllServicesByClinic(formikCreateAppointment.values.data.work_center)
+        .then((response: any) => {
+          setListServices(
+            response.data.map(({ id, attributes }: any) => ({
+              id,
+              label: `${attributes.service.data.attributes.name}`,
+            }))
+          );
+        });
+
+      locationAppointment.getAlllocationAppointment().then((response: any) => {
+        setListLocationsAppointment(
+          response?.data.map(({ id, attributes }: any) => ({
+            id,
+            label: `${attributes.location}`,
+          }))
+        );
+      });
+      console.log({ appointment });
+      if (appointment.id) {
+        appointmentLines
+          .getAppointmentLinesByAppointment(appointment.id)
+          .then((response: any) => {
+            setListServicesAppointment(response.data);
+            formikCreateAppointment.setFieldValue(
+              "data.services",
+              response.data.map(({ id }: any) => id)
+            );
+          });
+      }
+
+      Promise.all([
+        controlsService.getAllPorcentageDiscount(),
+        controlsService.getAllPorcentageBenefit(),
+      ])
+        .then(([porcentageDiscountResult, porcentageBenefitResult]: any) => {
+          // Aquí puedes trabajar con los resultados de ambas promesas
+          setPorcentageBenefitsEmployee(
+            porcentageBenefitResult?.data.map(({ id, attributes }: any) => ({
+              id,
+              porcentage_value: attributes.porcentage_value,
+              value: attributes.value,
+            }))
+          );
+
+          setPorcentageDiscountService(
+            porcentageDiscountResult?.data.map(({ id, attributes }: any) => ({
+              id,
+              porcentage_value: attributes.porcentage_value,
+              value: attributes.value,
+            }))
+          );
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos:", error);
+        });
     }
   }, [appointment]);
 
-  useEffect(() => {
-    console.log(
-      "values formikCreateAppointment --> ",
-      formikCreateAppointment.values
-    );
-  }, [formikCreateAppointment.values]);
-
-  useEffect(() => {
-    controlsService
-      .getAllTaxes()
-      .then((response: TaxImpRequestGET) => {
-        setListPorcetagesTaxes(
-          response.data.map(({ id, attributes }) => ({
-            id,
-            label: `${attributes.name} - ${attributes.porcentage}%`,
-          }))
-        );
-      })
-      .finally(() => {
-        setLoadingTaxes(false);
-      });
-  }, []);
-
   return (
     <>
+      {/* <hr></hr>
+      <hr></hr>
+
+      {JSON.stringify(formikCreateAppointment.values)}
+      <hr></hr>
+      <hr></hr>
+      {JSON.stringify(formikPatientAppointment.values)}
+      <hr></hr>
+      <hr></hr> */}
+
       <div className="w-full flex mt-5">
         <FormControl fullWidth sx={{ m: 1 }}>
           <InputLabel htmlFor="outlined-adornment-amount">
@@ -425,18 +410,6 @@ const AppointmentForm = () => {
         </FormControl>
       </div>
       <FormControl className="flex" fullWidth sx={{ m: 1 }}>
-        {/* <ToggleSwitch
-          handleChange={formikPatientAppointment.handleChange}
-          name="data.health_insurance"
-          value={formikPatientAppointment.values?.health_insurance ?? false}
-          text={"¿Tiene Seguro?"}
-        />
-        <ToggleSwitch
-          handleChange={formikCreateAppointment.handleChange}
-          name="data.paid_all_insurance"
-          value={formikCreateAppointment.values?.paid_all_insurance ?? false}
-          text={"¿El costo ha sido cubierto en su totalidad por el seguro?"}
-        /> */}
         <div className="flex items-center">
           <Typography>Seguro médico</Typography>
           <Checkbox
@@ -456,21 +429,63 @@ const AppointmentForm = () => {
       </FormControl>
 
       <div className="w-full flex mt-2">
-        <FormControl fullWidth sx={{ m: 1 }}>
-          <Autocomplete
-            freeSolo
-            style={{ width: "100%" }}
-            disablePortal
-            id="combo-box-demo"
-            options={workCenters}
-            sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Clinica" />}
-          />
-        </FormControl>
+        {workCenters.length > 0 && (
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <Autocomplete
+              style={{ width: "100%" }}
+              disablePortal
+              value={
+                formikCreateAppointment.values.data.work_center
+                  ? workCenters.find(
+                      (workCenter: { id: number | string; label: string }) =>
+                        workCenter.id ===
+                        formikCreateAppointment.values.data.work_center
+                    )
+                  : null
+              }
+              id="combo-box-demo"
+              options={workCenters}
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Clinica" />
+              )}
+            />
+          </FormControl>
+        )}
+
+        {listLocationsAppointment.length > 0 && (
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <Autocomplete
+              style={{ width: "100%" }}
+              disablePortal
+              value={
+                formikCreateAppointment.values.data.location_appointment_id
+                  ? listLocationsAppointment.find(
+                      (location: { id: number | string; label: string }) =>
+                        location.id ===
+                        formikCreateAppointment.values.data
+                          .location_appointment_id
+                    )
+                  : listLocationsAppointment.length === 1
+                  ? listLocationsAppointment[0]
+                  : null
+              }
+              id="combo-box-demo"
+              options={listLocationsAppointment}
+              sx={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} label="Ubicación cita" />
+              )}
+            />
+          </FormControl>
+        )}
+
         <FormControl fullWidth sx={{ m: 1 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              value={formikCreateAppointment.values.datetime_appointment}
+            <DateTimePicker
+              value={dayjs(
+                formikCreateAppointment.values.data.datetime_appointment
+              )}
               onChange={formikCreateAppointment.handleChange}
               label={"Fecha de la cita"}
               name={"datetime_appointment"}
@@ -490,41 +505,43 @@ const AppointmentForm = () => {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={personName}
-          onChange={handleChange}
+          value={
+            formikCreateAppointment.values.data.services
+              ? listServices.filter(
+                  (service: { id: number | string; label: string }) =>
+                    formikCreateAppointment.values.data.services.includes(
+                      service.id
+                    )
+                )
+              : []
+          }
+          onChange={handleChangeServices}
           input={<OutlinedInput label="Servicio" />}
-          renderValue={(selected) => selected.join(", ")}
+          renderValue={(selected) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((service: any) => (
+                <Chip key={service.id} label={service.label} />
+              ))}
+            </Box>
+          )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem key={name} value={name}>
-              <Checkbox checked={personName.indexOf(name) > -1} />
-              <ListItemText primary={name} />
-            </MenuItem>
-          ))}
+          {listServices.map(
+            (service: { id: number | string; label: string }) => (
+              <MenuItem key={service.id} value={service.id}>
+                <Checkbox
+                  checked={
+                    formikCreateAppointment.values.data.services &&
+                    formikCreateAppointment.values.data.services.includes(
+                      service.id
+                    )
+                  }
+                />
+                <ListItemText primary={service.label} />
+              </MenuItem>
+            )
+          )}
         </Select>
-      </FormControl>
-      <FormControl fullWidth sx={{ m: 1 }}>
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel3-content"
-            id="panel3-header"
-          >
-            Detalle de Cita
-          </AccordionSummary>
-          <AccordionDetails>
-            <PodoTable
-              rows={[] as unknown}
-              setRowModesModel={setRowModesModel}
-              setRows={setRows}
-              rowModesModel={rowModesModel}
-              columns={columns}
-              columnVisibilityModel={{ id: false, id_year: false }}
-              loading={loading}
-            ></PodoTable>
-          </AccordionDetails>
-        </Accordion>
       </FormControl>
 
       <FormControl fullWidth sx={{ m: 1 }}>

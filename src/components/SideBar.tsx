@@ -21,7 +21,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import GroupIcon from "@mui/icons-material/Group";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AccountCircle, BarChartOutlined, HomeWork } from "@mui/icons-material";
+import { AccountCircle, BarChartOutlined } from "@mui/icons-material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { ROUTES_AVAILABLES } from "../constants/rutes";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -100,9 +100,19 @@ export const SideBar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            PodoPro
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            CliniGo
           </Typography>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            // onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer

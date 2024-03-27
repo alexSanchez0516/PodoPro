@@ -35,6 +35,7 @@ export const Login = () => {
               authService
                 .getUserById(response.user.id!)
                 .then((responseUser) => {
+                  console.log({ responseUser });
                   const userWithAuth = { ...responseUser, isAuth: true };
                   loginUser(userWithAuth);
                 });

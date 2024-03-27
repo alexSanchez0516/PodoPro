@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Register } from "./pages/auth/Register";
 import { Login } from "./pages/auth/Login";
 import { AppTheme } from "./theme/AppTheme";
@@ -7,7 +7,7 @@ import { AppLayout } from "./layouts/AppLayout";
 import NotFound from "./pages/NotFound";
 import { ROUTES_AVAILABLES } from "./constants/rutes";
 import Patients from "./pages/app/Patients/Patients";
-import Appointments from "./pages/app/Appointments/Appointments";
+import Appointments from "./pages/app/Appointments/View";
 import Statistics from "./pages/app/Statistics/Statistics";
 import ControlPanel from "./pages/app/ControlPanel/ControlPanel";
 import UserProfile from "./pages/app/Profile/Profile";

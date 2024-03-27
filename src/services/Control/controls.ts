@@ -15,13 +15,14 @@ import {
 import { API_URL_STRAPI } from "../../constants/endpoints";
 
 const controlsService = {
-  getAllPorcentageDiscount:
-    async (): Promise<PorcentageDiscountBenefitResponseGET> => {
-      const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
-        `${API_URL_STRAPI}/porcentage-discounts`
-      );
-      return response.data;
-    },
+  getAllPorcentageDiscount: async (
+    userId: number | string = 1
+  ): Promise<PorcentageDiscountBenefitResponseGET> => {
+    const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
+      `${API_URL_STRAPI}/porcentage-discounts?filters[user_id][id][$eq]=${userId}`
+    );
+    return response.data;
+  },
   getPorcentageDiscountById: async (
     id: number | string
   ): Promise<PorcentageDiscountBenefitResponseGET> => {
@@ -31,7 +32,7 @@ const controlsService = {
     return response.data;
   },
   createAllPorcentageDiscount: async (
-    body: any
+    body: unknown
   ): Promise<PorcentageDiscountBenefitResponsePOST> => {
     const response = await axios.post<PorcentageDiscountBenefitResponsePOST>(
       `${API_URL_STRAPI}/porcentage-discounts`,
@@ -40,13 +41,14 @@ const controlsService = {
     return response.data;
   },
 
-  getAllPorcentageBenefit:
-    async (): Promise<PorcentageDiscountBenefitResponseGET> => {
-      const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
-        `${API_URL_STRAPI}/porcentage-employees`
-      );
-      return response.data;
-    },
+  getAllPorcentageBenefit: async (
+    userId: number | string = 1
+  ): Promise<PorcentageDiscountBenefitResponseGET> => {
+    const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
+      `${API_URL_STRAPI}/porcentage-employees?filters[user_id][id][$eq]=${userId}`
+    );
+    return response.data;
+  },
   getPorcentageBenefitById: async (
     id: number | string
   ): Promise<PorcentageDiscountBenefitResponseGET> => {
@@ -55,13 +57,14 @@ const controlsService = {
     );
     return response.data;
   },
-  createAllPorcentageBenefit:
-    async (): Promise<PorcentageDiscountBenefitResponseGET> => {
-      const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
-        `${API_URL_STRAPI}/porcentage-employees`
-      );
-      return response.data;
-    },
+  createAllPorcentageBenefit: async (
+    userId: number | string = 1
+  ): Promise<PorcentageDiscountBenefitResponseGET> => {
+    const response = await axios.get<PorcentageDiscountBenefitResponseGET>(
+      `${API_URL_STRAPI}/porcentage-employees?filters[user_id][id][$eq]=${userId}`
+    );
+    return response.data;
+  },
   getAllTaxes: async (): Promise<TaxImpRequestGET> => {
     const response = await axios.get<TaxImpRequestGET>(
       `${API_URL_STRAPI}/taxes-imps`

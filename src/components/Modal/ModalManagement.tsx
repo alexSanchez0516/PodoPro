@@ -66,7 +66,7 @@ export const ModalManagement = () => {
         body={<View />}
         open={showAppointmentEdit}
         handleClose={() => handleClose(MODAL_TYPE.APPOINTMENT_EDIT)}
-        title={"Identificador Cita ADC234"}
+        title={<Typography variant="h4">Cita: TBV4LATV</Typography>}
       ></CustomModalPodo>
 
       <CustomModalPodo
